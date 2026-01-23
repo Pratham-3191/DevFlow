@@ -11,6 +11,7 @@ import { useAuthStore } from './store/authStore'
 import DashboardLayout from './layouts/DashboardLayout'
 import PublicLayout from './layouts/PublicLayout'
 import Profile from './pages/Profile'
+import Project from './pages/Projects'
 
 function App() {
   const hasRun = useRef(false);
@@ -59,6 +60,11 @@ function App() {
         <Route element={<DashboardLayout />}>
           <Route path='/profile' element={<ProtectedRoute>
             <Profile />
+          </ProtectedRoute>} />
+        </Route>
+        <Route element={<DashboardLayout/>}>
+          <Route path='/projects' element={<ProtectedRoute>
+            <Project />
           </ProtectedRoute>} />
         </Route>
         <Route element={<PublicLayout />}>

@@ -21,14 +21,15 @@ const generateRefreshToken = (userId) => {
 const signUp = async (req, res, next) => {
     try {
         const { name, email, password } = req.body
-        console.log(name, email, password);
-        const existingUser = await User.findOne({ email });
+
+        const normalizedEmail = email.toLowerCase();
+        const existingUser = await User.findOne({ email: normalizedEmail });
         if (existingUser) return res.status(400).json({
             success: false,
             message: "User already exists"
         });
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ name, email, password: hashedPassword });
+        const user = await User.create({ name, email: normalizedEmail, password: hashedPassword });
 
         const accessToken = generateAccessToken(user._id);
         const refreshToken = generateRefreshToken(user._id);
@@ -54,7 +55,8 @@ const signUp = async (req, res, next) => {
 const signIn = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const normalizedEmail = email.toLowerCase();
+        const user = await User.findOne({ email:normalizedEmail });
         if (!user) {
             return res.status(404).json({
                 message: 'Wrong credentials',

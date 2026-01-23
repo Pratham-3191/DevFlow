@@ -22,6 +22,11 @@ function DashboardHeader() {
   const activeClass = "bg-linear-to-br from-blue-600 to-purple-600 text-white";
   const inactiveClass = "text-gray-700 hover:bg-gray-100";
 
+ const logout = () => {
+  localStorage.removeItem('auth-storage');
+  window.location.reload();
+};
+
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
@@ -83,7 +88,7 @@ function DashboardHeader() {
               className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
               title="Logout"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut onClick={logout} className="w-5 h-5" />
             </button>
           </div>
 
@@ -123,8 +128,8 @@ function DashboardHeader() {
             })}
 
             <div className="pt-2 border-t border-gray-200">
-              <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
-                <LogOut className="w-5 h-5" />
+              <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
+                <LogOut  className="w-5 h-5" />
                 <span>Logout</span>
               </button>
             </div>

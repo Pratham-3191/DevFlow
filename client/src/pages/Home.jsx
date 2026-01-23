@@ -1,6 +1,5 @@
 import React from 'react';
 import HomeHeader from '../components/HomeHeader';
-import HomeFooter from '../components/HomeFooter';
 import { ArrowRight, Zap, Shield, Layers } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { Link } from 'react-router-dom';
@@ -124,9 +123,6 @@ function Home() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <HomeFooter />
     </div>
   );
 }

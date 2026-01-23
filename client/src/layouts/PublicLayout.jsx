@@ -1,11 +1,13 @@
 import { Outlet } from "react-router-dom";
 import HomeHeader from '../components/HomeHeader'
+import HomeFooter from '../components/HomeFooter'
 
 function PublicLayout() {
     return (
         <>
             <HomeHeader />
             <Outlet />
+            <HomeFooter/>
         </>
     )
 }

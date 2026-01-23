@@ -2,7 +2,7 @@ import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Signup from './pages/Signup'
 import Home from './pages/Home'
-import SignIn from './pages/SignIn'
+import Signin from './pages/Signin'
 import ProtectedRoute from './components/ProtectedRoute'
 import AuthRedirect from './components/AuthRedirect'
 import Dashboard from './pages/Dashboard'
@@ -68,7 +68,7 @@ function App() {
           <Signup />
         </AuthRedirect>} path='/sign-up' />
         <Route element={<AuthRedirect>
-          <SignIn />
+          <Signin />
         </AuthRedirect>} path='/sign-in' />
       </Routes>
     </BrowserRouter>

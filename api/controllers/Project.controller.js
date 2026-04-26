@@ -190,7 +190,7 @@ const addProjectMember = async (req, res, next) => {
 
     const project = req.project;
 
-    //  Prevent duplicate members (IMPORTANT: use toString)
+    //  Prevent duplicate members 
     const isAlreadyMember = project.members.some(
       (memberId) => memberId.toString() === user._id.toString()
     );

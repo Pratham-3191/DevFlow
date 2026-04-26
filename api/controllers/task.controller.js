@@ -340,7 +340,7 @@ const updateTask1 = async (req, res) => {
 };
 
 
-// ✅ Delete task (only creator)
+// Delete task (only creator)
 const deleteTask = async (req, res) => {
   try {
     const userId = req.user.id;

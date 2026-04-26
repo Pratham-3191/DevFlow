@@ -9,7 +9,7 @@ function HomeFooter() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-600 to-purple-600" />
-              <span className="text-gray-900">DevPortal</span>
+              <span className="text-gray-900">DevFlow</span>
             </div>
             <p className="text-gray-600">Building the future of development tools.</p>
           </div>
@@ -43,11 +43,11 @@ function HomeFooter() {
         </div>
 
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-600">© 2026 DevPortal. All rights reserved.</p>
+          <p className="text-gray-600">© 2026 DevFlow. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors"><Github className="w-5 h-5" /></a>
+            <a target='_blank' href="https://github.com/Pratham-3191" className="text-gray-600 hover:text-gray-900 transition-colors"><Github className="w-5 h-5" /></a>
             <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors"><Twitter className="w-5 h-5" /></a>
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors"><Linkedin className="w-5 h-5" /></a>
+            <a target='_blank' href="https://www.linkedin.com/in/pratham-chaudhari-9237a0288" className="text-gray-600 hover:text-gray-900 transition-colors"><Linkedin className="w-5 h-5" /></a>
           </div>
         </div>
       </div>

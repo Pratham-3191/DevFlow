@@ -1,6 +1,6 @@
 import React from "react";
 
-function Card({ children, className = "", hover = false }) {
+function Card({ children, className = "", hover = false, ...props }) {
   return (
     <div
       className={`
@@ -8,6 +8,7 @@ function Card({ children, className = "", hover = false }) {
         ${hover ? "hover:shadow-lg transition-shadow duration-200" : ""}
         ${className}
       `}
+      {...props}   
     >
       {children}
     </div>

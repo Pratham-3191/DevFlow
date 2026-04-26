@@ -95,7 +95,7 @@ function SignIn() {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr 
     from-purple-500/20 to-blue-500/20 rounded-full blur-3xl" />
       {/* Back Button (OUTSIDE the card) */}
-      <div className="absolute top-6 left-6 z-20">
+      <div className="absolute top-6 left-6 z-20 hidden md:block">
         <Link to="/">
           <button className="flex items-center gap-2 text-gray-700 hover:text-black transition">
             <ArrowLeft className="h-4 w-4" />
@@ -108,6 +108,16 @@ function SignIn() {
 
       <div className="relative z-20 bg-white  border border-gray-300
        shadow-xl rounded-2xl p-5 xl:w-[30%] md:w-[40%] sm:w-[80%] w-[90%]">
+        {/* Back Button (INSIDE card – mobile only) */}
+        <div className="absolute top-4 left-4 md:hidden">
+          <Link to="/">
+            <button className="flex items-center gap-2 text-gray-600 hover:text-black transition text-sm">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back</span>
+            </button>
+          </Link>
+        </div>
+
         <div className='text-center mb-7'>
           <div className="inline-flex w-12 h-12 rounded-xl bg-linear-to-br from-blue-600 to-purple-600 mb-4" />
           <h1 className="text-2xl font-semibold text-gray-900">Welcome Back</h1>

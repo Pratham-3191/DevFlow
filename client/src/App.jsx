@@ -12,6 +12,7 @@ import DashboardLayout from './layouts/DashboardLayout'
 import PublicLayout from './layouts/PublicLayout'
 import Profile from './pages/Profile'
 import Project from './pages/Projects'
+import Tasks from './pages/Tasks'
 
 function App() {
   const hasRun = useRef(false);
@@ -21,7 +22,7 @@ function App() {
     hasRun.current = true;
 
     const initAuth = async () => {
-      const { refreshToken, setAuth, logout, user } =
+      const { refreshToken, setAuth, logout } =
         useAuthStore.getState();
 
       if (!refreshToken) return;
@@ -39,7 +40,12 @@ function App() {
         if (!res.ok) throw new Error("Session expired");
 
         const data = await res.json();
-        setAuth(user, data.accessToken, refreshToken);
+
+        const currentUser = useAuthStore.getState().user;
+
+        if (!currentUser) throw new Error("User missing");
+
+        setAuth(currentUser, data.accessToken, refreshToken);
       } catch {
         logout();
       }
@@ -48,37 +54,67 @@ function App() {
     initAuth();
   }, []);
 
-
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<DashboardLayout />}>
-          <Route path='/dashboard' element={<ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <Project />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:projectId"
+            element={
+              <ProtectedRoute>
+                <Tasks />
+              </ProtectedRoute>
+            }
+          />
         </Route>
-        <Route element={<DashboardLayout />}>
-          <Route path='/profile' element={<ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>} />
-        </Route>
-        <Route element={<DashboardLayout/>}>
-          <Route path='/projects' element={<ProtectedRoute>
-            <Project />
-          </ProtectedRoute>} />
-        </Route>
+
         <Route element={<PublicLayout />}>
-          <Route element={<Home />} path='/' />
+          <Route path="/" element={<Home />} />
         </Route>
-        <Route element={<AuthRedirect>
-          <Signup />
-        </AuthRedirect>} path='/sign-up' />
-        <Route element={<AuthRedirect>
-          <Signin />
-        </AuthRedirect>} path='/sign-in' />
+
+        <Route
+          path="/sign-up"
+          element={
+            <AuthRedirect>
+              <Signup />
+            </AuthRedirect>
+          }
+        />
+        <Route
+          path="/sign-in"
+          element={
+            <AuthRedirect>
+              <Signin />
+            </AuthRedirect>
+          }
+        />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

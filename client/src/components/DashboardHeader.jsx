@@ -10,9 +10,12 @@ import {
   X,
 } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import { toast } from 'react-toastify';
 
 function DashboardHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const user = useAuthStore((state) => state.user);
 
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: Home },
@@ -22,20 +25,33 @@ function DashboardHeader() {
   const activeClass = "bg-linear-to-br from-blue-600 to-purple-600 text-white";
   const inactiveClass = "text-gray-700 hover:bg-gray-100";
 
- const logout = () => {
-  localStorage.removeItem('auth-storage');
-  window.location.reload();
-};
+  const logoutUser = () => {
+    try {
+      localStorage.removeItem('auth-storage');
+
+      toast.success("Logged out successfully");
+
+      // small delay so toast is visible
+      setTimeout(() => {
+        window.location.href = "/sign-in";
+      }, 1000);
+
+    } catch (err) {
+      toast.error("Failed to logout");
+    }
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-600 to-purple-600" />
-            <span className="text-gray-900 font-semibold">DevPortal</span>
-          </div>
+          <Link to={'/'}>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-600 to-purple-600" />
+              <span className="text-gray-900 font-semibold">DevFlow</span>
+            </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
@@ -59,36 +75,38 @@ function DashboardHeader() {
 
           {/* Desktop Right Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+            {/* <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
               <Search className="w-4 h-4" />
               <span>Search...</span>
               <kbd className="px-2 py-0.5 rounded bg-white border border-gray-300 text-gray-500">
                 ⌘K
               </kbd>
-            </button>
+            </button> */}
 
             <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
               <Bell className="w-5 h-5 text-gray-700" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
             </button>
 
-            <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-              <div className="text-right">
-                <div className="text-gray-900">John Doe</div>
-                <div className="text-gray-500 text-sm">
-                  john@example.com
+            <Link to={'/profile'}>
+              <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+                <div className="text-right">
+                  <div className="text-gray-900">{user?.name}</div>
+                  <div className="text-gray-500 text-sm truncate w-45">
+                    {user?.email}
+                  </div>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium">
+                  {user?.name.toUpperCase().split(" ").map((n) => n.split('')[0])}
                 </div>
               </div>
-              <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium">
-                JD
-              </div>
-            </div>
+            </Link>
 
             <button
               className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
               title="Logout"
             >
-              <LogOut onClick={logout} className="w-5 h-5" />
+              <LogOut onClick={logoutUser} className="w-5 h-5" />
             </button>
           </div>
 
@@ -128,9 +146,12 @@ function DashboardHeader() {
             })}
 
             <div className="pt-2 border-t border-gray-200">
-              <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
-                <LogOut  className="w-5 h-5" />
-                <span>Logout</span>
+              <button
+                onClick={logoutUser}
+                className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-5 h-5" />
               </button>
             </div>
           </nav>

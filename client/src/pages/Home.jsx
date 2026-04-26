@@ -3,8 +3,11 @@ import HomeHeader from '../components/HomeHeader';
 import { ArrowRight, Zap, Shield, Layers } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 
 function Home() {
+ const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   const features = [
     {
       icon: <Zap className="w-6 h-6" />,
@@ -29,7 +32,7 @@ function Home() {
       <HomeHeader />
 
       {/* Hero Section */}
-      <main className="pt-32 px-4 sm:px-6 lg:px-8 flex-1">
+      <main className="pt-24 lg:pt-32 px-4 sm:px-6 lg:px-8 flex-1">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
 
           {/* Hero Text */}
@@ -49,7 +52,7 @@ function Home() {
               and collaborate with your team all in one place.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to={'/sign-up'}>
+               <Link to={isAuthenticated ? '/dashboard' : '/sign-up'}>
                 <Button size="lg">
                   Get Started
                   <ArrowRight className="w-5 h-5" />
@@ -62,7 +65,7 @@ function Home() {
 
             <div className="flex items-center gap-8 pt-4 justify-center lg:justify-start">
               <div>
-                <div className="text-gray-900 font-bold text-xl">50K+</div>
+                <div className="text-gray-900 font-bold text-xl">5K+</div>
                 <div className="text-gray-600">Active Users</div>
               </div>
               <div className="w-px h-12 bg-gray-300" />
@@ -87,7 +90,7 @@ function Home() {
         </div>
 
         {/* Features Section */}
-        <section className="py-20 bg-white">
+        <section id="features" className="py-20 bg-white">
           <div className="max-w-7xl mx-auto text-center mb-16">
             <h2 className="text-gray-900 text-3xl font-bold mb-4">Everything You Need</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -106,6 +109,8 @@ function Home() {
             ))}
           </div>
         </section>
+
+
 
         {/* CTA Section */}
         <section className="py-20">

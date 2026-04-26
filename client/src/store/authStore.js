@@ -16,13 +16,22 @@ export const useAuthStore = create(
                     refreshToken,
                     isAuthenticated: true,
                 }),
-            logout: () =>
+            logout: () => {
+                localStorage.removeItem("auth-storage");
                 set({
                     user: null,
                     accessToken: null,
                     refreshToken: null,
                     isAuthenticated: false,
-                }),
+                });
+            },
+            updateUser: (updatedFields) =>
+                set((state) => ({
+                    user: {
+                        ...state.user,
+                        ...updatedFields
+                    }
+                }))
         }),
         {
             name: "auth-storage",

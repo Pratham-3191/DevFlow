@@ -177,102 +177,145 @@ if (
 
       <form onSubmit={handleSubmit} className="p-6 space-y-5">
 
-        {/* Title */}
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter task title"
-          className="w-full px-4 py-2 border rounded-lg"
-          required
-        />
+  {/* Title */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Task Title</label>
+    <input
+      type="text"
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      placeholder="Enter task title"
+      className="w-full px-4 py-2 border rounded-lg"
+      required
+    />
+  </div>
 
-        {/* Description */}
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={3}
-          className="w-full px-4 py-2 border rounded-lg"
-        />
+  {/* Description */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Description</label>
+    <textarea
+      value={description}
+      onChange={(e) => setDescription(e.target.value)}
+      rows={3}
+      placeholder="Enter task description"
+      className="w-full px-4 py-2 border rounded-lg"
+    />
+  </div>
 
-        {/* Status & Priority */}
-        <div className="grid grid-cols-2 gap-4">
-          <select value={status} onChange={(e) => setStatus(e.target.value)} className="p-2 border rounded">
-            <option>Todo</option>
-            <option>In Progress</option>
-            <option>Completed</option>
-          </select>
+  {/* Status & Priority */}
+  <div className="grid grid-cols-2 gap-4">
+    
+    <div>
+      <label className="block text-sm font-medium mb-1">Status</label>
+      <select
+        value={status}
+        onChange={(e) => setStatus(e.target.value)}
+        className="w-full p-2 border rounded"
+      >
+        <option>Todo</option>
+        <option>In Progress</option>
+        <option>Completed</option>
+      </select>
+    </div>
 
-          <select value={priority} onChange={(e) => setPriority(e.target.value)} className="p-2 border rounded">
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-          </select>
-        </div>
+    <div>
+      <label className="block text-sm font-medium mb-1">Priority</label>
+      <select
+        value={priority}
+        onChange={(e) => setPriority(e.target.value)}
+        className="w-full p-2 border rounded"
+      >
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+      </select>
+    </div>
 
-        {/* Due Date */}
-        <input
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-          className="w-full p-2 border rounded"
-        />
+  </div>
 
-        {/* 🔥 Assign Users */}
-        <div>
-          <div className="flex gap-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter user email"
-              className="w-full px-4 py-2 border rounded"
-            />
-            <button type="button" onClick={handleFindUser} className="px-4 bg-blue-600 text-white rounded">
-              Search
+  {/* Due Date */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Due Date</label>
+    <input
+      type="date"
+      value={dueDate}
+      onChange={(e) => setDueDate(e.target.value)}
+      className="w-full p-2 border rounded"
+    />
+  </div>
+
+  {/* Assign Users */}
+  <div>
+    <label className="block text-sm font-medium mb-2">Assign Members</label>
+
+    <div className="flex gap-2">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Enter user email"
+        className="w-full px-4 py-2 border rounded truncate"
+      />
+      <button
+        type="button"
+        onClick={handleFindUser}
+        className="px-4 bg-blue-600 text-white rounded"
+      >
+        Search
+      </button>
+    </div>
+
+    {loadingUser && <p className="text-sm mt-1">Searching...</p>}
+    {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+
+    {/* Users List */}
+    {foundUsers.length > 0 && (
+      <div className="mt-3 space-y-2">
+        {foundUsers.map(user => (
+          <div
+            key={user._id}
+            className="flex justify-between items-center p-2 bg-green-50 border rounded"
+          >
+            <p className="text-sm truncate">
+              <strong>{user.name}</strong> ({user.email})
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setFoundUsers(prev => prev.filter(u => u._id !== user._id));
+                setAssignedMember(prev => prev.filter(id => id !== user._id));
+                toast.info("User removed");
+              }}
+              className="text-red-500 text-sm"
+            >
+              Remove
             </button>
           </div>
+        ))}
+      </div>
+    )}
+  </div>
 
-          {loadingUser && <p className="text-sm mt-1">Searching...</p>}
-          {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+  {/* Buttons */}
+  <div className="flex gap-3">
+    <button
+      type="submit"
+      className="flex-1 bg-blue-600 text-white py-2 rounded"
+    >
+      {isEditMode ? 'Update Task' : 'Add Task'}
+    </button>
 
-          {/* ✅ MULTIPLE USERS UI */}
-          {foundUsers.length > 0 && (
-            <div className="mt-3 space-y-2">
-              {foundUsers.map(user => (
-                <div key={user._id} className="flex justify-between items-center p-2 bg-green-50 border rounded">
-                  <p className="text-sm">
-                    <strong>{user.name}</strong> ({user.email})
-                  </p>
+    <button
+      type="button"
+      onClick={onCancel}
+      className="px-4 bg-gray-200 rounded"
+    >
+      Cancel
+    </button>
+  </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFoundUsers(prev => prev.filter(u => u._id !== user._id));
-                      setAssignedMember(prev => prev.filter(id => id !== user._id));
-                      toast.info("User removed");
-                    }}
-                    className="text-red-500 text-sm"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-3">
-          <button type="submit" className="flex-1 bg-blue-600 text-white py-2 rounded">
-            {isEditMode ? 'Update Task' : 'Add Task'}
-          </button>
-          <button type="button" onClick={onCancel} className="px-4 bg-gray-200 rounded">
-            Cancel
-          </button>
-        </div>
-
-      </form>
+</form>
     </div>
   );
 }

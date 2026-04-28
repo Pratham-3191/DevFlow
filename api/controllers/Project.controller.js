@@ -154,13 +154,20 @@ const updateProject = async (req, res) => {
 // Delete project
 const deleteProject = async (req, res) => {
   try {
-    const project = await Project.findByIdAndDelete(req.params.id);
+    const project = await Project.findById(req.params.id);
 
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    res.json({ message: 'Project deleted' });
+    if (project.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Only the project creator can delete this project.' });
+    }
+
+    await Project.findByIdAndDelete(req.params.id);
+
+    res.json({ message: 'Project deleted successfully' });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

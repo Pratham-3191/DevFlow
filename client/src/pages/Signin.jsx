@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/authStore';
 
 function SignIn() {
   const setAuth = useAuthStore((s) => s.setAuth)
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -38,27 +39,30 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const emailErr = validateEmail(formData.email);
-      const passErr = validatePassword(formData.password);
 
-      setErrors({
-        email: emailErr,
-        password: passErr,
+    const emailErr = validateEmail(formData.email);
+    const passErr = validatePassword(formData.password);
+
+    setErrors({
+      email: emailErr,
+      password: passErr,
+    });
+
+    if (passErr || emailErr) return;
+
+    try {
+      setLoading(true); // ✅ start loading
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/sign-in`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
       });
 
-      if (passErr || emailErr) return;
-
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/sign-in`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
-        }
-      )
       const data = await res.json();
+
       if (!res.ok) {
         toast.error(data.message);
         return;
@@ -67,15 +71,13 @@ function SignIn() {
       setAuth(data.user, data.accessToken, data.refreshToken);
       toast.success(data.message);
 
-      console.log(data)
-
-      if (emailErr || passErr) return;
-      console.log(formData)
     } catch (error) {
-      setErrors({ login: error })
-      toast.error('someting went wrong');
+      setErrors({ login: error });
+      toast.error('Something went wrong');
+    } finally {
+      setLoading(false); // ✅ stop loading ALWAYS
     }
-  }
+  };
 
   return (
     <div className="absolute inset-0 overflow-hidden -z-10 flex flex-col items-center justify-center">
@@ -163,11 +165,12 @@ function SignIn() {
             <p className='text-red-500'>{errors.login}</p>
             <button
               type="submit"
-              disabled={isFormInvalid}
-              className={`${isFormInvalid && 'opacity-70'} 
-              bg-linear-to-br from-blue-600 to-purple-600 
-              py-3 text-white rounded-xl cursor-pointer w-full`}>
-              Sign In
+              disabled={isFormInvalid || loading}
+              className={`${(isFormInvalid || loading) && 'opacity-70 cursor-not-allowed'
+                } bg-linear-to-br from-blue-600 to-purple-600 
+                  py-3 text-white rounded-xl w-full`}
+            >
+              {loading ? "Signing In..." : "Sign In"}
             </button>
 
             {/* Separator */}

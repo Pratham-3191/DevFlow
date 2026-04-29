@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/authStore';
 
 function Signup() {
     const setAuth = useAuthStore((state) => state.setAuth)
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -41,16 +42,19 @@ function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const emailErr = validateEmail(formData.email);
+        const passErr = validatePassword(formData.password);
+
+        setErrors({
+            email: emailErr,
+            password: passErr,
+        });
+
+        if (emailErr || passErr) return;
+
         try {
-            const emailErr = validateEmail(formData.email);
-            const passErr = validatePassword(formData.password);
-
-            setErrors({
-                email: emailErr,
-                password: passErr,
-            });
-
-            if (emailErr || passErr) return;
+            setLoading(true);
 
             const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/sign-up`, {
                 method: 'POST',
@@ -58,8 +62,10 @@ function Signup() {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(formData)
-            })
+            });
+
             let data = await res.json();
+
             if (!res.ok) {
                 toast.error(data.message);
                 return;
@@ -67,12 +73,14 @@ function Signup() {
 
             setAuth(data.user, data.accessToken, data.refreshToken);
             toast.success(data.message);
-            console.log(data)
+
         } catch (error) {
             toast.error("Something went wrong!");
-            setErrors({ signup: error })
+            setErrors({ signup: error });
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     return (
         <div className=' flex flex-row'>
@@ -129,10 +137,13 @@ function Signup() {
                             <span className='ml-3'>I agree to the Terms of Service and Privacy Policy</span>
                         </div>
                         <div className='text-red-500 flex flex-col '>{errors.signup}
-                            <button type='submit'
-                                disabled={isFormInvalid}
-                                className={` ${isFormInvalid && 'opacity-70'} bg-linear-to-br from-blue-600 to-purple-600 py-3 text-white rounded-xl cursor-pointer`}>
-                                Create Account
+                            <button
+                                type="submit"
+                                disabled={isFormInvalid || loading}
+                                className={`${(isFormInvalid || loading) && 'opacity-70 cursor-not-allowed'
+                                    } bg-linear-to-br from-blue-600 to-purple-600 py-3 text-white rounded-xl`}
+                            >
+                                {loading ? "Creating Account..." : "Create Account"}
                             </button>
                         </div>
                         <p className='text-center text-gray-600'>Already have an account?

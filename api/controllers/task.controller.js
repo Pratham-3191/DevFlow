@@ -108,7 +108,7 @@ const getTaskById = async (req, res) => {
 };
 
 
-// ✅ CREATE TASK + ADD MEMBERS TO PROJECT
+// CREATE TASK + ADD MEMBERS TO PROJECT
 const createTask = async (req, res) => {
   try {
     const {
@@ -123,21 +123,20 @@ const createTask = async (req, res) => {
 
     const userId = req.user.id;
 
-    // ✅ 1. CHECK PROJECT EXISTS
+    //CHECK PROJECT EXISTS
     const project = await Project.findById(projectId);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // ✅ 2. CHECK IF USER IS CREATOR
+    // CHECK IF USER IS CREATOR
     if (project.createdBy.toString() !== userId) {
       return res.status(403).json({
         message: "Only project owner can create tasks",
       });
     }
 
-    // ✅ 3. Continue your logic
     let assignedUsers = [];
 
     if (assignedMember && Array.isArray(assignedMember)) {

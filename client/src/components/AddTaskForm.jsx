@@ -136,11 +136,9 @@ if (
 
     try {
       if (isEditMode && editTask && onEditTask) {
-        await onEditTask(editTask._id, taskData);
-        toast.success("Task updated successfully");
+        await onEditTask(editTask._id, taskData)
       } else {
         await onAddTask(taskData);
-        toast.success("Task added successfully");
       }
 
       // reset

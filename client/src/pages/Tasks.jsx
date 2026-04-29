@@ -64,62 +64,48 @@ function Tasks() {
   ).length;
   const percentage = total ? Math.round((completed / total) * 100) : 0;
 
-  /* Handlers */
 
-  // ✅ Create task
-  const handleAddTask = async (taskData) => {
-    try {
-      const res = await apiFetch("/tasks", {
-        method: "POST",
-        body: JSON.stringify({ ...taskData, projectId }),
-      });
+  // Create task
+ const handleAddTask = async (taskData) => {
+  const res = await apiFetch("/tasks", {
+    method: "POST",
+    body: JSON.stringify({ ...taskData, projectId }),
+  });
 
-      if (!res.ok) {
-        const errData = await res.json();
-        toast.error(errData.message || "Failed to create task");
-        return;
-      }
+  const data = await res.json();
 
-      const newTask = await res.json();
-      setTasks((prev) => [...prev, newTask]);
-      setShowForm(false);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
 
-  // ✅ Update task
+  setTasks((prev) => [...prev, data]);
+  setShowForm(false);
+
+  toast.success("Task added successfully"); 
+};
+
+  // Update task
   const handleEditTask = async (id, updatedTask) => {
-    try {
-      const res = await apiFetch(`/tasks/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(updatedTask),
-      });
+  const res = await apiFetch(`/tasks/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(updatedTask),
+  });
 
-      if (!res.ok) {
-        const errData = await res.json();
+  const data = await res.json();
 
-        if (res.status === 403) {
-          toast.error(errData.message || "You don’t have access to edit this task");
-        } else {
-          toast.error(errData.message || "Failed to update task");
-        }
+  if (!res.ok) {
+    throw new Error(data.message); 
+  }
 
-        return;
-      }
+  setTasks((prev) =>
+    prev.map((t) => (t._id === id ? data : t))
+  );
 
-      const data = await res.json();
+  setEditTask(null);
+  setShowForm(false);
 
-      setTasks((prev) =>
-        prev.map((t) => (t._id === id ? data : t))
-      );
-
-      setEditTask(null);
-      setShowForm(false);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+  toast.success("Task updated successfully"); 
+};
 
   // ✅ Delete task
   const handleDeleteTask = async (id) => {
